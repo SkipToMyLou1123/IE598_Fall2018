@@ -108,10 +108,6 @@ print( metrics.confusion_matrix(y_test, y_pred) )
 print("My name is Yijun Lou\n"
       "My NetId is: ylou4\n"
       "I hereby certify that I have read the University policy on Academic Integrity and that I am not in violation.")
-
-# print("My name is Matthew Murphy")
-# print("My NetID is: mdmurph")
-# print("I hereby certify that I have read the University policy on Academic Integrity and that I am not in violation.")
 ######STOP HERE######################
 
 
