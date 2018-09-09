@@ -103,11 +103,11 @@ print( metrics.confusion_matrix(y_test, y_pred) )
 #[[ 8 0 0]
 #[ 0 3 8]
 #[ 0 4 15]]
-# plt.show()
 
 print("My name is Yijun Lou\n"
       "My NetId is: ylou4\n"
       "I hereby certify that I have read the University policy on Academic Integrity and that I am not in violation.")
+plt.show()
 ######STOP HERE######################
 
 
@@ -119,25 +119,25 @@ print("My name is Yijun Lou\n"
 
 
 #error in scikit learn package, which version??
-from sklearn.cross_validation import cross_val_score, KFold
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-# create a composite estimator made by a pipeline of the standarization and the linear model
-clf = Pipeline([(
-        'scaler', StandardScaler()),
-        ('linear_model', SGDClassifier())
-])
-# create a k-fold cross validation iterator of k=5 folds
-cv = KFold(X.shape[0], 5, shuffle=True, random_state=33)
-# by default the score used is the one returned by score method of the estimator (accuracy)
-scores = cross_val_score(clf, X, y, cv=cv)
-print( scores )
-#[ 0.66666667 0.93333333 0.66666667 0.7 0.6 ]
-
-
-from scipy.stats import sem
-def mean_score(scores): return ("Mean score: {0:.3f} (+/- {1:.3f})").format(np.mean(scores), sem(scores))
-print( mean_score(scores) )
+# from sklearn.cross_validation import cross_val_score, KFold
+# from sklearn.pipeline import Pipeline
+# from sklearn.preprocessing import StandardScaler
+# # create a composite estimator made by a pipeline of the standarization and the linear model
+# clf = Pipeline([(
+#         'scaler', StandardScaler()),
+#         ('linear_model', SGDClassifier())
+# ])
+# # create a k-fold cross validation iterator of k=5 folds
+# cv = KFold(X.shape[0], 5, shuffle=True, random_state=33)
+# # by default the score used is the one returned by score method of the estimator (accuracy)
+# scores = cross_val_score(clf, X, y, cv=cv)
+# print( scores )
+# #[ 0.66666667 0.93333333 0.66666667 0.7 0.6 ]
+#
+#
+# from scipy.stats import sem
+# def mean_score(scores): return ("Mean score: {0:.3f} (+/- {1:.3f})").format(np.mean(scores), sem(scores))
+# print( mean_score(scores) )
 # Mean score: 0.713 (+/-0.057)
 
 
