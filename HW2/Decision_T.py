@@ -83,6 +83,10 @@ dot_data = export_graphviz(tree,
                            out_file=None)
 graph = graph_from_dot_data(dot_data)
 
+from sklearn import metrics
+y_train_pred = tree.predict(X_train)
+print( "Accuracy is: ", metrics.accuracy_score(y_train, y_train_pred) )
+
 print("My name is Yijun Lou\n"
           "My NetId is: ylou4\n"
           "I hereby certify that I have read the University policy on Academic Integrity and that I am not in violation.")
