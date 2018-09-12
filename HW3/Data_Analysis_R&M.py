@@ -127,3 +127,7 @@ print("\nListing 2-10: Presenting Attribute Correlations Visually")
 corMat = pd.DataFrame(data.corr())
 plt.pcolor(corMat)
 plt.show()
+
+print("My name is Yijun Lou\n"
+          "My NetId is: ylou4\n"
+          "I hereby certify that I have read the University policy on Academic Integrity and that I am not in violation.")

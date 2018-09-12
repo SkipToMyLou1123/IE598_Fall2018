@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1ca23c01-811a-4a3c-8cfe-438acd1b13a0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/HW2/Iris.xls" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/HW2/Decision_T.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/HW2/Testing_K4KNN.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HW1/G&amp;M_SGD_Classifier.py" afterPath="$PROJECT_DIR$/HW1/G&amp;M_SGD_Classifier.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py" afterPath="$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,8 +17,8 @@
       <file leaf-file-name="G&amp;M_SGD_Classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HW1/G&amp;M_SGD_Classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="108" column="118" lean-forward="true" selection-start-line="106" selection-start-column="0" selection-end-line="108" selection-end-column="118" />
+            <state relative-caret-position="139">
+              <caret line="85" column="0" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="87" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -30,8 +27,8 @@
       <file leaf-file-name="Testing_K4KNN.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HW2/Testing_K4KNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="97" column="0" lean-forward="true" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+            <state relative-caret-position="416">
+              <caret line="113" column="4" lean-forward="true" selection-start-line="113" selection-start-column="4" selection-end-line="115" selection-end-column="122" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -39,14 +36,36 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Decision_T.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Decision_T.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HW2/Decision_T.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="689">
-              <caret line="89" column="10" lean-forward="false" selection-start-line="89" selection-start-column="10" selection-end-line="89" selection-end-column="10" />
+            <state relative-caret-position="236">
+              <caret line="75" column="35" lean-forward="false" selection-start-line="75" selection-start-column="35" selection-end-line="75" selection-end-column="35" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Data_Analysis_R&amp;M.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="401">
+              <caret line="125" column="0" lean-forward="true" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+              <folding>
+                <element signature="e#31#50#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sonar.all-data.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/HW3/sonar.all-data.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="381" lean-forward="false" selection-start-line="20" selection-start-column="381" selection-end-line="20" selection-end-column="381" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -70,6 +89,8 @@
         <option value="$PROJECT_DIR$/HW1/G&amp;M_SGD_Classifier.py" />
         <option value="$PROJECT_DIR$/HW2/Testing_K4KNN.py" />
         <option value="$PROJECT_DIR$/HW2/Decision_T.py" />
+        <option value="$PROJECT_DIR$/HW3/sonar.all-data.csv" />
+        <option value="$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py" />
       </list>
     </option>
   </component>
@@ -112,6 +133,11 @@
               <item name="IE598_F18_HW1" type="462c0819:PsiDirectoryNode" />
               <item name="HW2" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="IE598_F18_HW1" type="b2602c69:ProjectViewProjectNode" />
+              <item name="IE598_F18_HW1" type="462c0819:PsiDirectoryNode" />
+              <item name="HW3" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -141,7 +167,24 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Decision_T">
+  <component name="RunManager" selected="Python.Data_Analysis_R&amp;M">
+    <configuration name="Data_Analysis_R&amp;M" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/HW3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="IE598_F18_HW1" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
     <configuration name="Decision_T" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -193,16 +236,18 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.G&amp;M_SGD_Classifier" />
       <item index="1" class="java.lang.String" itemvalue="Python.Testing_K4KNN" />
       <item index="2" class="java.lang.String" itemvalue="Python.Decision_T" />
+      <item index="3" class="java.lang.String" itemvalue="Python.Data_Analysis_R&amp;M" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.Decision_T" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Testing_K4KNN" />
-        <item index="2" class="java.lang.String" itemvalue="Python.G&amp;M_SGD_Classifier" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python.Data_Analysis_R&amp;M" />
+        <item index="1" class="java.lang.String" itemvalue="Python.Decision_T" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Testing_K4KNN" />
+        <item index="3" class="java.lang.String" itemvalue="Python.G&amp;M_SGD_Classifier" />
       </list>
     </recent_temporary>
   </component>
@@ -217,19 +262,42 @@
       <option name="presentableId" value="Default" />
       <updated>1535641475375</updated>
     </task>
+    <task id="LOCAL-00001" summary="Hw2">
+      <created>1536505475492</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1536505475493</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Hw2">
+      <created>1536544093355</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1536544093355</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Hw3">
+      <created>1536724588380</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1536724588380</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="947" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25274727" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25274727" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29312426" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29312426" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293124" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -244,6 +312,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Hw2" />
+    <MESSAGE value="Hw3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hw3" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -279,6 +352,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="382" column="0" lean-forward="false" selection-start-line="382" selection-start-column="0" selection-end-line="382" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -292,28 +366,54 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/HW1/G&amp;M_SGD_Classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="108" column="118" lean-forward="true" selection-start-line="106" selection-start-column="0" selection-end-line="108" selection-end-column="118" />
+        <state relative-caret-position="139">
+          <caret line="85" column="0" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="87" selection-end-column="54" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/HW2/Testing_K4KNN.py">
+    <entry file="file://$PROJECT_DIR$/HW2/Decision_T.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="97" column="0" lean-forward="true" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+        <state relative-caret-position="236">
+          <caret line="75" column="35" lean-forward="false" selection-start-line="75" selection-start-column="35" selection-end-line="75" selection-end-column="35" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/HW2/Decision_T.py">
+    <entry file="file://$PROJECT_DIR$/HW3/sonar.all-data.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="689">
-          <caret line="89" column="10" lean-forward="false" selection-start-line="89" selection-start-column="10" selection-end-line="89" selection-end-column="10" />
+        <state relative-caret-position="300">
+          <caret line="20" column="381" lean-forward="false" selection-start-line="20" selection-start-column="381" selection-end-line="20" selection-end-column="381" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="3457" column="4" lean-forward="false" selection-start-line="3457" selection-start-column="4" selection-end-line="3457" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HW2/Testing_K4KNN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="113" column="4" lean-forward="true" selection-start-line="113" selection-start-column="4" selection-end-line="115" selection-end-column="122" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HW3/Data_Analysis_R&amp;M.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="125" column="0" lean-forward="true" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+          <folding>
+            <element signature="e#31#50#0" expanded="true" />
           </folding>
         </state>
       </provider>
