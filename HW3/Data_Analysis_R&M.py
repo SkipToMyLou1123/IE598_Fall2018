@@ -24,13 +24,6 @@ print(data.dtypes)
 print("\nListing 2-3: Summary Statistics for Numeric and Categorical Attributes")
 
 def generate_summary4column(data, col=0, num_of_q_boundaries=4):
-    # ret_dict = {}
-    # for i in range(0, len(data)):
-    #     curr_data = data.iloc[i]
-    #     curr_label = curr_data[60]
-    #     if curr_label not in ret_dict:
-    #         ret_dict[curr_label] = {'count': 0}
-    #     ret_dict[curr_label]['count'] += 1
     col_data = data[col]
     print("Mean = ", np.mean(col_data))
     print("Standard Deviation = ", np.std(col_data))
