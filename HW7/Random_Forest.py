@@ -24,17 +24,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y,
 # rfc = RandomForestClassifier(random_state=1)
 # param_grid = [{'n_estimators': [100,200,500,1000]}]
 # gs = GridSearchCV(estimator=rfc, param_grid=param_grid, scoring='accuracy', cv=10, n_jobs=-1)
-for i in [100, 200, 500, 1000]:
+for i in [1, 2, 3, 5, 8, 13, 21, 34, 55, 89]:
     rfc = RandomForestClassifier(random_state=1, n_estimators=i)
     rfc.fit(X_train, y_train)
-    print("In sample accuracy with n_estimators = %d is %f" % (i, rfc.score(X_train, y_train)))
+    print("With n_estimators = %d, in sample accuracy is %.3f and out of sample accuracy is %.3f" % (i, rfc.score(X_train, y_train), rfc.score(X_test, y_test)))
 # gs.fit(X_train, y_train)
 
 # print("Best score: ", gs.best_score_)
 # print("Best parameters: ", gs.best_params_)
 
 feat_labels = dataset.columns[1:]
-rfc = RandomForestClassifier(random_state=1,n_estimators=500)
+rfc = RandomForestClassifier(random_state=1,n_estimators=5)
 rfc.fit(X_train,y_train)
 importances = rfc.feature_importances_
 indices = np.argsort(importances)[::-1]
