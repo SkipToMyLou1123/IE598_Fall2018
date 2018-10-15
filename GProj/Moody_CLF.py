@@ -2,7 +2,7 @@ __author__ = 'Yijun Lou, Changjie Ma, Yuxin Sun, Xiaoyu Yuan'
 __copyright__ = "Copyright 2018, The Group Project of IE598"
 __credits__ = ["Yijun Lou", "Changjie Ma", "Yuxin Sun", "Xiaoyu Yuan"]
 __license__ = "University of Illinois, Urbana Champaign"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Yijun Lou"
 __email__ = "ylou4@illinois.edu"
 
@@ -16,6 +16,7 @@ from sklearn.decomposition import PCA, KernelPCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
 from copy import deepcopy as dcp
 from functools import partial
 
@@ -68,6 +69,11 @@ class Moody_CLF:
         kernel = ["linear", "poly", "rbf", "sigmoid", "cosine", "precomputed"]
         kernel = ["linear", "poly", "rbf"]
 
+        # no_input_neurals = len(self.data.columns - 2)
+        # no_output_neurals = len(self.inv_grd.columns)
+        # no_samples_training = len(self.attr_table) * 0.9
+        hidden_layer_sizes = [int(a * ((len(self.data_set.columns)-1)**(0.5))) for a in range(1, 11)]
+
         # TODO: FILL THE DICTIONARY BELOW AND RUN THIS SCRIPT
         # Initialize the process dictionary, pipeline will be generated based on this dictionary.
         self.process_dict = {
@@ -82,7 +88,8 @@ class Moody_CLF:
                 'do_nothing': None,
             },
             'model': {
-                'logistic': LogisticRegression(),
+                # 'logistic': LogisticRegression(),
+                'neural_net':  MLPClassifier(),
             }
         }
 
@@ -101,6 +108,11 @@ class Moody_CLF:
             'logistic': {
                 'C': C,
                 'penalty': penalty,
+            },
+            'neural_net': {
+                'hidden_layer_sizes': hidden_layer_sizes,
+                'solver': ['lbfgs', 'sgd', 'adam'],
+                'activation': ['identity', 'logistic', 'tanh', 'relu'],
             }
         }
 
@@ -258,6 +270,7 @@ class Moody_CLF:
         # print("Saving result")
         ret = self.record_model(key, parameters)
         # print("-" * 60 + "\n")
+        print("Estimator %s down" % key)
         return ret
 
     def do_task_mp(self, processes=4):
