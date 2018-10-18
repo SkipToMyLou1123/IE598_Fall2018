@@ -19,6 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from copy import deepcopy as dcp
 from functools import partial
+from sklearn.ensemble import RandomForestClassifier
 
 class Moody_CLF:
 
@@ -62,17 +63,20 @@ class Moody_CLF:
         self.make_training_test(test_size, random_state)
 
         # n_components = list(range(1, self.attr_table.shape[1]+1,1))
-        n_components = [1,2,3,4,5,6]
+        n_components = [1,24,26]
         # C = np.logspace(-4, 4, 50)
         C = np.logspace(-4, 4, 10)
         penalty = ['l1', 'l2']
         kernel = ["linear", "poly", "rbf", "sigmoid", "cosine", "precomputed"]
         kernel = ["linear", "poly", "rbf"]
+        fib = [1,2,3,5,8,13,21,34,55,89]
+        # max_depth = list(range(1, len(self.attr_table.shape[1]), 1))
 
         # no_input_neurals = len(self.data.columns - 2)
         # no_output_neurals = len(self.inv_grd.columns)
         # no_samples_training = len(self.attr_table) * 0.9
         hidden_layer_sizes = [int(a * ((len(self.data_set.columns)-1)**(0.5))) for a in range(1, 11)]
+        hidden_layer_sizes = [(36, 28, 14, 7), (36, 18, 9, 3), (36, 24, 12, 6), (36, 20, 8, 4)]
 
         # TODO: FILL THE DICTIONARY BELOW AND RUN THIS SCRIPT
         # Initialize the process dictionary, pipeline will be generated based on this dictionary.
@@ -89,7 +93,8 @@ class Moody_CLF:
             },
             'model': {
                 # 'logistic': LogisticRegression(),
-                'neural_net':  MLPClassifier(),
+                # 'neural_net':  MLPClassifier(),
+                'random_forest': RandomForestClassifier(),
             }
         }
 
@@ -97,6 +102,7 @@ class Moody_CLF:
         self.parameters_dict = {
             'pca': {
                 'n_components': n_components,
+                'svd_solver': ['full', 'arpack', 'randomized']
             },
             'lda': {
                 'n_components': n_components,
@@ -111,8 +117,14 @@ class Moody_CLF:
             },
             'neural_net': {
                 'hidden_layer_sizes': hidden_layer_sizes,
-                'solver': ['lbfgs', 'sgd', 'adam'],
-                'activation': ['identity', 'logistic', 'tanh', 'relu'],
+                'solver': ['lbfgs'],#['lbfgs', 'sgd', 'adam'],
+                'activation': ['identity', 'logistic', 'tanh', 'relu'],#['tanh'],#['identity', 'logistic', 'tanh', 'relu'],
+            },
+            'random_forest': {
+                'n_estimators': [50,100,200],
+                'max_features': ['auto', 'sqrt', 'log2'],
+                'max_depth': [4, 5, 6, 7, 8],
+                'criterion': ['gini', 'entropy'],
             }
         }
 
@@ -124,13 +136,13 @@ class Moody_CLF:
         self.make_pipelines()
         self.show_result()
 
-    def run_mp(self, processes=4):
+    def run_mp(self, processes=4, file_name = 'result.csv'):
         '''
         Run model in multiple processor.
         :return:
         '''
         self.do_task_mp(processes=processes)
-        self.show_result()
+        self.show_result(file_name=file_name)
 
     def make_pipelines(self):
         '''
@@ -252,7 +264,7 @@ class Moody_CLF:
                     del parameters[key]
         return ret_list
 
-    def run_estimator_mp(self, iter_list, scoring=None, cv=10):
+    def run_estimator_mp(self, iter_list, scoring='accuracy', cv=5, n_jobs=-1):
         '''
         TODO
         :param iter_list:
@@ -264,13 +276,13 @@ class Moody_CLF:
         pipe = iter_list[1]
         parameters = iter_list[2]
         print("Generating estimator %s" % key)
-        self.clf = GridSearchCV(estimator=pipe, param_grid=parameters, scoring=scoring, cv=cv)
+        self.clf = GridSearchCV(estimator=pipe, param_grid=parameters, scoring=scoring, cv=cv, n_jobs=n_jobs, verbose=10)
         # print("Fitting model")
-        self.clf.fit(self.attr_table, self.inv_grd)
+        self.clf.fit(self.X_train, self.y_train)
         # print("Saving result")
         ret = self.record_model(key, parameters)
         # print("-" * 60 + "\n")
-        print("Estimator %s down" % key)
+        # print("Estimator %s down" % key)
         return ret
 
     def do_task_mp(self, processes=4):
@@ -286,10 +298,13 @@ class Moody_CLF:
 
         for item in ret_list:
             key = item[0]
-            best_score = item[1]
-            self.result[key]['best_score'] = best_score
+            # best_score = item[1]
+            in_sample_acc = item[1]
+            out_of_sample_acc = item[2]
+            self.result[key]['in_sample_accuracy'] = in_sample_acc
+            self.result[key]['out_of_sample_accuracy'] = out_of_sample_acc
             self.result[key]['best_parameters_set'] = {}
-            for p, v in item[2:]:
+            for p, v in item[3:]:
                 self.result[key]['best_parameters_set'][p] = v
 
     def record_model(self, key, parameters):
@@ -301,9 +316,14 @@ class Moody_CLF:
         '''
         # 输出best score
         ret = [key]
-        print("Best score: %0.3f" % self.clf.best_score_)
-        self.result[key]['best_score'] = self.clf.best_score_
-        ret.append(self.clf.best_score_)
+        print("%s Best score: %0.3f" % (key, self.clf.best_score_))
+        # self.result[key]['best_in_sample_accuracy'] = self.clf.best_score_
+        # ret.append(self.clf.best_score_)
+        # print(self.clf.score(self.X_train, self.y_train), self.clf.score(self.X_test, self.y_test))
+        self.result[key]['in_sample_accuracy'] = self.clf.score(self.X_train, self.y_train)
+        ret.append(self.result[key]['in_sample_accuracy'])
+        self.result[key]['out_of_sample_accuracy'] = self.clf.score(self.X_test, self.y_test)
+        ret.append(self.result[key]['out_of_sample_accuracy'])
         self.result[key]['best_parameters_set'] = {}
         # 输出最佳的分类器的参数
         best_parameters = self.clf.best_estimator_.get_params()
@@ -323,21 +343,32 @@ class Moody_CLF:
         best_estimator = ""
         estimator_list = []
         best_score_list = []
+        in_sample_acc_list = []
+        out_of_sample_acc_list = []
         params_list = []
         max_no_params = 0
         for k, v in self.result.items():
 
             estimator_name = k.replace('do_nothing+', '')
-            estimator_score = v['best_score']
+            # estimator_score = v['best_score']
+
+            # print("Estimator Name: %s" % (estimator_name))
+            # print("Best Score: %0.3f" % (estimator_score))
+
+            estimator_score = v['out_of_sample_accuracy']
+            estimator_score_isp = v['in_sample_accuracy']
 
             print("Estimator Name: %s" % (estimator_name))
-            print("Best Score: %0.3f" % (estimator_score))
+            print("In of sample accuracy: %0.3f" % (estimator_score_isp))
+            print("Out of sample accuracy: %0.3f" % (estimator_score))
 
             if save:
                 estimator_list.append(k)
-                best_score_list.append(estimator_score)
+                in_sample_acc_list.append(estimator_score_isp)
+                out_of_sample_acc_list.append(estimator_score)
+                # best_score_list.append(estimator_score)
 
-            if v['best_score'] > best_score:
+            if estimator_score > best_score:
                 best_estimator = estimator_name
                 best_score = estimator_score
 
@@ -356,10 +387,10 @@ class Moody_CLF:
             print("*" * 60 + "\n")
 
         if save:
-            self.save_result(estimator_list, best_score_list, params_list, max_no_params, file_name)
-        print("BEST ESTIMATOR IS %s WITH SCORE %0.3f" % (best_estimator, best_score))
+            self.save_result(estimator_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name)
+        print("BEST ESTIMATOR IS %s WITH PREDICT SCORE %0.3f" % (best_estimator, best_score))
 
-    def save_result(self, estimator_list, best_score_list, params_list, max_no_params, file_name='result.csv'):
+    def save_result(self, estimator_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name='result.csv'):
         cwd = os.getcwd()
         full_path = cwd + "/" + file_name
         print("Save result as %s" % full_path)
@@ -374,7 +405,9 @@ class Moody_CLF:
             col_name = "parameter_" + str(i+1)
             data[col_name] = []
 
-        data['best_score'] = []
+        # data['best_score'] = []
+        data['in_sample_accuracy'] = []
+        data['out_of_sample_accuracy'] = []
 
         for i in range(0, len(estimator_list)):
 
@@ -384,8 +417,11 @@ class Moody_CLF:
             data['decomposition'].append(p2)
             data['classifier'].append(p3)
 
-            curr_score = best_score_list[i]
-            data['best_score'].append(curr_score)
+            curr_in_sample_acc = in_sample_acc_list[i]
+            curr_out_of_sample_acc = out_of_sample_acc_list[i]
+            # data['best_score'].append(curr_score)
+            data['in_sample_accuracy'].append(curr_in_sample_acc)
+            data['out_of_sample_accuracy'].append(curr_out_of_sample_acc)
 
             curr_params_set = params_list[i]
             for j in range(0, max_no_params):
@@ -395,7 +431,17 @@ class Moody_CLF:
         df = pd.DataFrame.from_dict(data)
         df.to_csv(file_name)
 
+    def generate_voting_classifier(self, file='result.csv'):
+        logistic_clf = LogisticRegression(C=0.046415888336127774, penalty='l2')
+        random_forest_clf = RandomForestClassifier()
+        neural_net_clf = MLPClassifier(hidden_layer_sizes=36, activation='tanh', solver='lbfgs')
+        p1 = [StandardScaler(), logistic_clf]
+        p2 = [random_forest_clf]
+        p3 = [StandardScaler(), PCA(n_components=1), neural_net_clf]
+
+
+
 if __name__ == '__main__':
     my_clf = Moody_CLF()
     my_clf.initialize()
-    my_clf.run_mp()
+    my_clf.run_mp(file_name="random_forest.csv")
