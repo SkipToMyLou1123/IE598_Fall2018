@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from copy import deepcopy as dcp
 from functools import partial
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier, AdaBoostClassifier
 
 class Moody_CLF:
 
@@ -82,11 +82,11 @@ class Moody_CLF:
         # Initialize the process dictionary, pipeline will be generated based on this dictionary.
         self.process_dict = {
             'preprocessing': {
-                'standard_scaler': StandardScaler(),
+                # 'standard_scaler': StandardScaler(),
                 'do_nothing': None,
             },
             'decomposition': {
-                'pca': PCA(),
+                # 'pca': PCA(),
                 #'lda': LDA(),
                 #'kpca': KernelPCA(),
                 'do_nothing': None,
@@ -94,7 +94,8 @@ class Moody_CLF:
             'model': {
                 # 'logistic': LogisticRegression(),
                 # 'neural_net':  MLPClassifier(),
-                'random_forest': RandomForestClassifier(),
+                # 'random_forest': RandomForestClassifier(),
+                'ada_boost': AdaBoostClassifier(),
             }
         }
 
@@ -125,6 +126,11 @@ class Moody_CLF:
                 'max_features': ['auto', 'sqrt', 'log2'],
                 'max_depth': [4, 5, 6, 7, 8],
                 'criterion': ['gini', 'entropy'],
+            },
+            'ada_boost':{
+                'base_estimator__criterion': ['gini', 'entropy'],
+                'base_estimator__splitter': ['best', 'random'],
+                'n_estimators': [50, 100, 200],
             }
         }
 
@@ -453,10 +459,18 @@ class Moody_CLF:
         p3.fit(self.X_train, self.y_train)
         print(p3.score(self.X_train, self.y_train), p3.score(self.X_test, self.y_test))
 
+        ad_boost = AdaBoostClassifier(base_estimator=random_forest_clf, n_estimators=1000, algorithm="SAMME")
+        ad_boost.fit(self.X_train, self.y_train)
+        print(ad_boost.score(self.X_train, self.y_train), ad_boost.score(self.X_test, self.y_test))
+
+        eclf2 = VotingClassifier(estimators=[('ad_boost', ad_boost), ('p2', p2)], voting='soft', weights=[1.01,1])
+        eclf2.fit(self.X_train, self.y_train)
+        print(eclf2.score(self.X_train, self.y_train), eclf2.score(self.X_test, self.y_test))
+
 
 
 if __name__ == '__main__':
     my_clf = Moody_CLF()
     my_clf.initialize()
-    # my_clf.run_mp(file_name="random_forest.csv")
+    # my_clf.run_mp(file_name="ada_boost.csv")
     my_clf.generate_voting_classifier()
