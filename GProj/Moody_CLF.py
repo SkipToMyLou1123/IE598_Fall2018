@@ -2,7 +2,7 @@ __author__ = 'Yijun Lou, Changjie Ma, Yuxin Sun, Xiaoyu Yuan'
 __copyright__ = "Copyright 2018, The Group Project of IE598"
 __credits__ = ["Yijun Lou", "Changjie Ma", "Yuxin Sun", "Xiaoyu Yuan"]
 __license__ = "University of Illinois, Urbana Champaign"
-__version__ = "1.2.1"
+__version__ = "1.3.0"
 __maintainer__ = "Yijun Lou"
 __email__ = "ylou4@illinois.edu"
 
@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from copy import deepcopy as dcp
 from functools import partial
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 
 class Moody_CLF:
 
@@ -63,7 +63,7 @@ class Moody_CLF:
         self.make_training_test(test_size, random_state)
 
         # n_components = list(range(1, self.attr_table.shape[1]+1,1))
-        n_components = [1,24,26]
+        n_components = [1,24]
         # C = np.logspace(-4, 4, 50)
         C = np.logspace(-4, 4, 10)
         penalty = ['l1', 'l2']
@@ -298,13 +298,14 @@ class Moody_CLF:
 
         for item in ret_list:
             key = item[0]
-            # best_score = item[1]
-            in_sample_acc = item[1]
-            out_of_sample_acc = item[2]
+            best_score = item[1]
+            in_sample_acc = item[2]
+            out_of_sample_acc = item[3]
+            self.result[key]['best_score'] = in_sample_acc
             self.result[key]['in_sample_accuracy'] = in_sample_acc
             self.result[key]['out_of_sample_accuracy'] = out_of_sample_acc
             self.result[key]['best_parameters_set'] = {}
-            for p, v in item[3:]:
+            for p, v in item[4:]:
                 self.result[key]['best_parameters_set'][p] = v
 
     def record_model(self, key, parameters):
@@ -317,8 +318,8 @@ class Moody_CLF:
         # 输出best score
         ret = [key]
         print("%s Best score: %0.3f" % (key, self.clf.best_score_))
-        # self.result[key]['best_in_sample_accuracy'] = self.clf.best_score_
-        # ret.append(self.clf.best_score_)
+        self.result[key]['best_score'] = self.clf.best_score_
+        ret.append(self.clf.best_score_)
         # print(self.clf.score(self.X_train, self.y_train), self.clf.score(self.X_test, self.y_test))
         self.result[key]['in_sample_accuracy'] = self.clf.score(self.X_train, self.y_train)
         ret.append(self.result[key]['in_sample_accuracy'])
@@ -355,18 +356,20 @@ class Moody_CLF:
             # print("Estimator Name: %s" % (estimator_name))
             # print("Best Score: %0.3f" % (estimator_score))
 
-            estimator_score = v['out_of_sample_accuracy']
+            estimator_score = v['best_score']
+            estimator_score_osp = v['out_of_sample_accuracy']
             estimator_score_isp = v['in_sample_accuracy']
 
             print("Estimator Name: %s" % (estimator_name))
+            print("Best Score: %0.3f" % (estimator_score))
             print("In of sample accuracy: %0.3f" % (estimator_score_isp))
-            print("Out of sample accuracy: %0.3f" % (estimator_score))
+            print("Out of sample accuracy: %0.3f" % (estimator_score_osp))
 
             if save:
                 estimator_list.append(k)
                 in_sample_acc_list.append(estimator_score_isp)
-                out_of_sample_acc_list.append(estimator_score)
-                # best_score_list.append(estimator_score)
+                out_of_sample_acc_list.append(estimator_score_osp)
+                best_score_list.append(estimator_score)
 
             if estimator_score > best_score:
                 best_estimator = estimator_name
@@ -387,10 +390,10 @@ class Moody_CLF:
             print("*" * 60 + "\n")
 
         if save:
-            self.save_result(estimator_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name)
+            self.save_result(estimator_list, best_score_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name)
         print("BEST ESTIMATOR IS %s WITH PREDICT SCORE %0.3f" % (best_estimator, best_score))
 
-    def save_result(self, estimator_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name='result.csv'):
+    def save_result(self, estimator_list, best_score_list, in_sample_acc_list, out_of_sample_acc_list, params_list, max_no_params, file_name='result.csv'):
         cwd = os.getcwd()
         full_path = cwd + "/" + file_name
         print("Save result as %s" % full_path)
@@ -405,7 +408,7 @@ class Moody_CLF:
             col_name = "parameter_" + str(i+1)
             data[col_name] = []
 
-        # data['best_score'] = []
+        data['best_score'] = []
         data['in_sample_accuracy'] = []
         data['out_of_sample_accuracy'] = []
 
@@ -419,7 +422,8 @@ class Moody_CLF:
 
             curr_in_sample_acc = in_sample_acc_list[i]
             curr_out_of_sample_acc = out_of_sample_acc_list[i]
-            # data['best_score'].append(curr_score)
+            best_score = best_score_list[i]
+            data['best_score'].append(best_score)
             data['in_sample_accuracy'].append(curr_in_sample_acc)
             data['out_of_sample_accuracy'].append(curr_out_of_sample_acc)
 
@@ -433,15 +437,26 @@ class Moody_CLF:
 
     def generate_voting_classifier(self, file='result.csv'):
         logistic_clf = LogisticRegression(C=0.046415888336127774, penalty='l2')
-        random_forest_clf = RandomForestClassifier()
+        random_forest_clf = RandomForestClassifier(criterion='gini', max_depth=8, max_features='auto', n_estimators=100)
         neural_net_clf = MLPClassifier(hidden_layer_sizes=36, activation='tanh', solver='lbfgs')
-        p1 = [StandardScaler(), logistic_clf]
-        p2 = [random_forest_clf]
-        p3 = [StandardScaler(), PCA(n_components=1), neural_net_clf]
+        p1 = Pipeline([('sd', StandardScaler()), ('lg', logistic_clf)])
+        p2 = Pipeline([('rf', random_forest_clf)])
+        p3 = Pipeline([('sd', StandardScaler()), ('pca', PCA(n_components=1)), ('nn', neural_net_clf)])
+        eclf1 = VotingClassifier(estimators=[('p1', p1), ('p2', p2), ('p3', p3)], voting='hard')
+        eclf1.fit(self.X_train, self.y_train)
+        print(eclf1.score(self.X_train, self.y_train), eclf1.score(self.X_test, self.y_test))
+
+        p1.fit(self.X_train, self.y_train)
+        print(p1.score(self.X_train, self.y_train), p1.score(self.X_test, self.y_test))
+        p2.fit(self.X_train, self.y_train)
+        print(p2.score(self.X_train, self.y_train), p2.score(self.X_test, self.y_test))
+        p3.fit(self.X_train, self.y_train)
+        print(p3.score(self.X_train, self.y_train), p3.score(self.X_test, self.y_test))
 
 
 
 if __name__ == '__main__':
     my_clf = Moody_CLF()
     my_clf.initialize()
-    my_clf.run_mp(file_name="random_forest.csv")
+    # my_clf.run_mp(file_name="random_forest.csv")
+    my_clf.generate_voting_classifier()
