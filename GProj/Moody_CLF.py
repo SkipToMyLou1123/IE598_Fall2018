@@ -2,7 +2,7 @@ __author__ = 'Yijun Lou, Changjie Ma, Yuxin Sun, Xiaoyu Yuan'
 __copyright__ = "Copyright 2018, The Group Project of IE598"
 __credits__ = ["Yijun Lou", "Changjie Ma", "Yuxin Sun", "Xiaoyu Yuan"]
 __license__ = "University of Illinois, Urbana Champaign"
-__version__ = "1.3.0"
+__version__ = "1.4.1"
 __maintainer__ = "Yijun Lou"
 __email__ = "ylou4@illinois.edu"
 
@@ -10,6 +10,8 @@ import pandas as pd
 import numpy as np
 import os
 import multiprocessing as mp
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA, KernelPCA
@@ -18,8 +20,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from copy import deepcopy as dcp
-from functools import partial
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier, AdaBoostClassifier
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 
 class Moody_CLF:
 
@@ -41,6 +47,31 @@ class Moody_CLF:
         self.inv_grd = self.data_set.iloc[:, -2]
         self.rating = self.data_set.iloc[:, -1]
 
+    def describe_data(self):
+        print(self.data_set.describe())
+        # fig, ax = plt.subplots(figsize=(6, 4))
+        # sns.countplot(x='InvGrd', data=self.data_set)
+        # plt.title("Count of InvGrd")
+        # plt.show()
+
+        n = len(self.attr_table)
+        invgrd_0 = len(self.data_set[self.data_set['InvGrd'] == 0])
+        invgrd_1 = len(self.data_set[self.data_set['InvGrd'] == 1])
+
+        print("% of instrument labeled 1 in dataset: ", invgrd_1 * 100 / n)
+        print("% of instrument labeled 0 in dataset: ", invgrd_0 * 100 / n)
+
+        # cor = self.attr_table.corr(method = "pearson")
+        # fig, ax = plt.subplots(figsize=(8, 6))
+        # plt.title("Correlation Plot")
+        # sns.heatmap(cor, mask=np.zeros_like(cor, dtype=np.bool), cmap=sns.diverging_palette(220, 10, as_cmap=True),
+        #             square=True, ax=ax)
+        # plt.tight_layout()
+        # plt.show()
+
+        sns.pairplot(self.attr_table)
+        plt.show()
+
     def make_training_test(self, test_size=0.25, random_state=None):
         '''
         Make training and test sets.
@@ -50,6 +81,8 @@ class Moody_CLF:
         '''
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.attr_table, self.inv_grd, test_size=test_size, random_state=random_state, stratify=self.inv_grd)
+        # self.X_train = SelectKBest(chi2, k=13).fit_transform(self.attr_table, self.inv_grd)
+
 
     def initialize(self, path = 'MLF_GP1_CreditScore.csv', test_size=0.25, random_state=None):
         '''
@@ -68,7 +101,7 @@ class Moody_CLF:
         C = np.logspace(-4, 4, 10)
         penalty = ['l1', 'l2']
         kernel = ["linear", "poly", "rbf", "sigmoid", "cosine", "precomputed"]
-        kernel = ["linear", "poly", "rbf"]
+        kernel = ["linear", "poly", "rbf", "sigmoid"]
         fib = [1,2,3,5,8,13,21,34,55,89]
         # max_depth = list(range(1, len(self.attr_table.shape[1]), 1))
 
@@ -82,11 +115,11 @@ class Moody_CLF:
         # Initialize the process dictionary, pipeline will be generated based on this dictionary.
         self.process_dict = {
             'preprocessing': {
-                # 'standard_scaler': StandardScaler(),
+                'standard_scaler': StandardScaler(),
                 'do_nothing': None,
             },
             'decomposition': {
-                # 'pca': PCA(),
+                'pca': PCA(),
                 #'lda': LDA(),
                 #'kpca': KernelPCA(),
                 'do_nothing': None,
@@ -94,8 +127,12 @@ class Moody_CLF:
             'model': {
                 # 'logistic': LogisticRegression(),
                 # 'neural_net':  MLPClassifier(),
-                # 'random_forest': RandomForestClassifier(),
-                'ada_boost': AdaBoostClassifier(),
+                'random_forest': RandomForestClassifier(),
+                # 'decision_tree': DecisionTreeClassifier(),
+                # 'extra_tree': ExtraTreeClassifier(),
+                # 'SVC': SVC(),
+                # 'gaussian_nb': GaussianNB(),
+                # 'knn': KNeighborsClassifier(),
             }
         }
 
@@ -103,7 +140,7 @@ class Moody_CLF:
         self.parameters_dict = {
             'pca': {
                 'n_components': n_components,
-                'svd_solver': ['full', 'arpack', 'randomized']
+                # 'svd_solver': ['full', 'arpack', 'randomized']
             },
             'lda': {
                 'n_components': n_components,
@@ -128,10 +165,29 @@ class Moody_CLF:
                 'criterion': ['gini', 'entropy'],
             },
             'ada_boost':{
-                'base_estimator__criterion': ['gini', 'entropy'],
-                'base_estimator__splitter': ['best', 'random'],
                 'n_estimators': [50, 100, 200],
-            }
+            },
+            'decision_tree':{
+                'criterion': ['gini', 'entropy'],
+                'splitter': ['best', 'random'],
+                'max_depth': [4, 5, 6, 7, 8, None],
+                'max_features': ['auto', 'sqrt', 'log2'],
+            },
+            'extra_tree':{
+                'criterion': ['gini', 'entropy'],
+                'splitter': ['best', 'random'],
+                'max_depth': [4, 5, 6, 7, 8, None],
+                'max_features': ['auto', 'sqrt', 'log2'],
+            },
+            'SVC':{
+                'kernel': kernel,
+                'gamma': [1,2,3],
+            },
+            'knn':{
+                'n_neighbors': [3,4,5,6,7,8],
+                'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
+                'p': [1,2],
+            },
         }
 
     def run(self):
@@ -142,13 +198,19 @@ class Moody_CLF:
         self.make_pipelines()
         self.show_result()
 
-    def run_mp(self, processes=4, file_name = 'result.csv'):
+    def run_mp(self, processes=4):
         '''
         Run model in multiple processor.
         :return:
         '''
         self.do_task_mp(processes=processes)
-        self.show_result(file_name=file_name)
+        self.show_result(file_name=self.generate_file_name())
+
+    def generate_file_name(self):
+        ret = ""
+        for k, v in self.process_dict['model'].items():
+            ret += k+"_"
+        return ret + ".csv"
 
     def make_pipelines(self):
         '''
@@ -270,7 +332,7 @@ class Moody_CLF:
                     del parameters[key]
         return ret_list
 
-    def run_estimator_mp(self, iter_list, scoring='accuracy', cv=5, n_jobs=-1):
+    def run_estimator_mp(self, iter_list, scoring='accuracy', cv=5, n_jobs=1):
         '''
         TODO
         :param iter_list:
@@ -282,7 +344,7 @@ class Moody_CLF:
         pipe = iter_list[1]
         parameters = iter_list[2]
         print("Generating estimator %s" % key)
-        self.clf = GridSearchCV(estimator=pipe, param_grid=parameters, scoring=scoring, cv=cv, n_jobs=n_jobs, verbose=10)
+        self.clf = GridSearchCV(estimator=pipe, param_grid=parameters, scoring=scoring, cv=cv, n_jobs=n_jobs)
         # print("Fitting model")
         self.clf.fit(self.X_train, self.y_train)
         # print("Saving result")
@@ -291,7 +353,7 @@ class Moody_CLF:
         # print("Estimator %s down" % key)
         return ret
 
-    def do_task_mp(self, processes=4):
+    def do_task_mp(self, processes=2):
         '''
         TODO
         :return:
@@ -307,7 +369,7 @@ class Moody_CLF:
             best_score = item[1]
             in_sample_acc = item[2]
             out_of_sample_acc = item[3]
-            self.result[key]['best_score'] = in_sample_acc
+            self.result[key]['best_score'] = best_score
             self.result[key]['in_sample_accuracy'] = in_sample_acc
             self.result[key]['out_of_sample_accuracy'] = out_of_sample_acc
             self.result[key]['best_parameters_set'] = {}
@@ -445,6 +507,7 @@ class Moody_CLF:
         logistic_clf = LogisticRegression(C=0.046415888336127774, penalty='l2')
         random_forest_clf = RandomForestClassifier(criterion='gini', max_depth=8, max_features='auto', n_estimators=100)
         neural_net_clf = MLPClassifier(hidden_layer_sizes=36, activation='tanh', solver='lbfgs')
+        decision_tree_clf = DecisionTreeClassifier(criterion='gini', max_depth=7, max_features='auto', splitter='best')
         p1 = Pipeline([('sd', StandardScaler()), ('lg', logistic_clf)])
         p2 = Pipeline([('rf', random_forest_clf)])
         p3 = Pipeline([('sd', StandardScaler()), ('pca', PCA(n_components=1)), ('nn', neural_net_clf)])
@@ -459,18 +522,20 @@ class Moody_CLF:
         p3.fit(self.X_train, self.y_train)
         print(p3.score(self.X_train, self.y_train), p3.score(self.X_test, self.y_test))
 
-        ad_boost = AdaBoostClassifier(base_estimator=random_forest_clf, n_estimators=1000, algorithm="SAMME")
+        ad_boost = AdaBoostClassifier(base_estimator=decision_tree_clf, n_estimators=1000, algorithm="SAMME")
         ad_boost.fit(self.X_train, self.y_train)
         print(ad_boost.score(self.X_train, self.y_train), ad_boost.score(self.X_test, self.y_test))
+        ad_boost2 = AdaBoostClassifier(base_estimator=random_forest_clf, n_estimators=1000, algorithm="SAMME")
+        ad_boost2.fit(self.X_train, self.y_train)
+        print(ad_boost2.score(self.X_train, self.y_train), ad_boost2.score(self.X_test, self.y_test))
 
-        eclf2 = VotingClassifier(estimators=[('ad_boost', ad_boost), ('p2', p2)], voting='soft', weights=[1.01,1])
+        eclf2 = VotingClassifier(estimators=[('ad_boost', ad_boost), ('p2', ad_boost2)], voting='hard', weights=[1,1])
         eclf2.fit(self.X_train, self.y_train)
         print(eclf2.score(self.X_train, self.y_train), eclf2.score(self.X_test, self.y_test))
-
-
 
 if __name__ == '__main__':
     my_clf = Moody_CLF()
     my_clf.initialize()
-    # my_clf.run_mp(file_name="ada_boost.csv")
-    my_clf.generate_voting_classifier()
+    # my_clf.describe_data()
+    my_clf.run_mp()
+    # my_clf.generate_voting_classifier()
