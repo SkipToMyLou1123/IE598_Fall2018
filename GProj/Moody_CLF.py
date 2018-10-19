@@ -2,7 +2,7 @@ __author__ = 'Yijun Lou, Changjie Ma, Yuxin Sun, Xiaoyu Yuan'
 __copyright__ = "Copyright 2018, The Group Project of IE598"
 __credits__ = ["Yijun Lou", "Changjie Ma", "Yuxin Sun", "Xiaoyu Yuan"]
 __license__ = "University of Illinois, Urbana Champaign"
-__version__ = "1.4.1"
+__version__ = "1.5.0"
 __maintainer__ = "Yijun Lou"
 __email__ = "ylou4@illinois.edu"
 
@@ -104,7 +104,6 @@ class Moody_CLF:
         kernel = ["linear", "poly", "rbf", "sigmoid"]
         fib = [1,2,3,5,8,13,21,34,55,89]
         # max_depth = list(range(1, len(self.attr_table.shape[1]), 1))
-
         # no_input_neurals = len(self.data.columns - 2)
         # no_output_neurals = len(self.inv_grd.columns)
         # no_samples_training = len(self.attr_table) * 0.9
@@ -115,11 +114,11 @@ class Moody_CLF:
         # Initialize the process dictionary, pipeline will be generated based on this dictionary.
         self.process_dict = {
             'preprocessing': {
-                'standard_scaler': StandardScaler(),
+                # 'standard_scaler': StandardScaler(),
                 'do_nothing': None,
             },
             'decomposition': {
-                'pca': PCA(),
+                # 'pca': PCA(),
                 #'lda': LDA(),
                 #'kpca': KernelPCA(),
                 'do_nothing': None,
@@ -127,12 +126,14 @@ class Moody_CLF:
             'model': {
                 # 'logistic': LogisticRegression(),
                 # 'neural_net':  MLPClassifier(),
-                'random_forest': RandomForestClassifier(),
+                # 'random_forest': RandomForestClassifier(),
                 # 'decision_tree': DecisionTreeClassifier(),
                 # 'extra_tree': ExtraTreeClassifier(),
                 # 'SVC': SVC(),
                 # 'gaussian_nb': GaussianNB(),
                 # 'knn': KNeighborsClassifier(),
+                # 'ada_boost': AdaBoostClassifier(base_estimator=KNeighborsClassifier(algorithm='auto', n_neighbors=3, p=1)),
+                'voting_clf': VotingClassifier(estimators=[('ad_boost', AdaBoostClassifier(base_estimator=RandomForestClassifier(criterion='gini', max_depth=8, max_features='auto', n_estimators=100), n_estimators=2000, algorithm="SAMME")), ('p2', AdaBoostClassifier(base_estimator=DecisionTreeClassifier(criterion='gini', max_depth=7, max_features='auto', splitter='best'), n_estimators=2000, algorithm="SAMME")), ("p3", KNeighborsClassifier(algorithm='auto', n_neighbors=3, p=1))])
             }
         }
 
@@ -165,7 +166,8 @@ class Moody_CLF:
                 'criterion': ['gini', 'entropy'],
             },
             'ada_boost':{
-                'n_estimators': [50, 100, 200],
+                'n_estimators': [10, 50, 100, 500, 1000, 2000],
+                'algorithm': ["SAMME"]
             },
             'decision_tree':{
                 'criterion': ['gini', 'entropy'],
@@ -188,6 +190,10 @@ class Moody_CLF:
                 'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],
                 'p': [1,2],
             },
+            'voting_clf':{
+                'voting': ['hard','soft'],
+                'weights': [[1, 1, 1], [1, 2, 1], [1, 3, 1], [2, 1, 1], [2 , 2 , 1], [3, 1, 1], [3,2,1], [3,3,1], [3,3,2], [2,2,3], [3,2,3]],
+            }
         }
 
     def run(self):
@@ -508,24 +514,24 @@ class Moody_CLF:
         random_forest_clf = RandomForestClassifier(criterion='gini', max_depth=8, max_features='auto', n_estimators=100)
         neural_net_clf = MLPClassifier(hidden_layer_sizes=36, activation='tanh', solver='lbfgs')
         decision_tree_clf = DecisionTreeClassifier(criterion='gini', max_depth=7, max_features='auto', splitter='best')
-        p1 = Pipeline([('sd', StandardScaler()), ('lg', logistic_clf)])
-        p2 = Pipeline([('rf', random_forest_clf)])
-        p3 = Pipeline([('sd', StandardScaler()), ('pca', PCA(n_components=1)), ('nn', neural_net_clf)])
-        eclf1 = VotingClassifier(estimators=[('p1', p1), ('p2', p2), ('p3', p3)], voting='hard')
-        eclf1.fit(self.X_train, self.y_train)
-        print(eclf1.score(self.X_train, self.y_train), eclf1.score(self.X_test, self.y_test))
+        # p1 = Pipeline([('sd', StandardScaler()), ('lg', logistic_clf)])
+        # p2 = Pipeline([('rf', random_forest_clf)])
+        # p3 = Pipeline([('sd', StandardScaler()), ('pca', PCA(n_components=1)), ('nn', neural_net_clf)])
+        # eclf1 = VotingClassifier(estimators=[('p1', p1), ('p2', p2), ('p3', p3)], voting='hard')
+        # eclf1.fit(self.X_train, self.y_train)
+        # print(eclf1.score(self.X_train, self.y_train), eclf1.score(self.X_test, self.y_test))
+        #
+        # p1.fit(self.X_train, self.y_train)
+        # print(p1.score(self.X_train, self.y_train), p1.score(self.X_test, self.y_test))
+        # p2.fit(self.X_train, self.y_train)
+        # print(p2.score(self.X_train, self.y_train), p2.score(self.X_test, self.y_test))
+        # p3.fit(self.X_train, self.y_train)
+        # print(p3.score(self.X_train, self.y_train), p3.score(self.X_test, self.y_test))
 
-        p1.fit(self.X_train, self.y_train)
-        print(p1.score(self.X_train, self.y_train), p1.score(self.X_test, self.y_test))
-        p2.fit(self.X_train, self.y_train)
-        print(p2.score(self.X_train, self.y_train), p2.score(self.X_test, self.y_test))
-        p3.fit(self.X_train, self.y_train)
-        print(p3.score(self.X_train, self.y_train), p3.score(self.X_test, self.y_test))
-
-        ad_boost = AdaBoostClassifier(base_estimator=decision_tree_clf, n_estimators=1000, algorithm="SAMME")
+        ad_boost = AdaBoostClassifier(base_estimator=decision_tree_clf, n_estimators=2000, algorithm="SAMME")
         ad_boost.fit(self.X_train, self.y_train)
         print(ad_boost.score(self.X_train, self.y_train), ad_boost.score(self.X_test, self.y_test))
-        ad_boost2 = AdaBoostClassifier(base_estimator=random_forest_clf, n_estimators=1000, algorithm="SAMME")
+        ad_boost2 = AdaBoostClassifier(base_estimator=random_forest_clf, n_estimators=2000, algorithm="SAMME")
         ad_boost2.fit(self.X_train, self.y_train)
         print(ad_boost2.score(self.X_train, self.y_train), ad_boost2.score(self.X_test, self.y_test))
 
