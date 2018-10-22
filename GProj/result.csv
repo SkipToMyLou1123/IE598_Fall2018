@@ -1,0 +1,5 @@
+,preprocessing,decomposition,classifier,parameter_1,parameter_2,best_score,in_sample_accuracy,out_of_sample_accuracy
+0,do_nothing,do_nothing,ada_boost_on_decision_tree,ada_boost__algorithm: SAMME,ada_boost__n_estimators: 2000,0.8713725490196078,1.0,0.8894117647058823
+1,do_nothing,do_nothing,ada_boost_on_random_forest,ada_boost__algorithm: SAMME,ada_boost__n_estimators: 2000,0.8525490196078431,1.0,0.8588235294117647
+2,do_nothing,do_nothing,voting_clf,voting_clf__voting: hard,"voting_clf__weights: [1, 2, 1]",0.8729411764705882,1.0,0.88
+
